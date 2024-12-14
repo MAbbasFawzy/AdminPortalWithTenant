@@ -4,17 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.opentest4j.AssertionFailedError;
 import org.testng.Assert;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterTest;
@@ -29,13 +25,11 @@ public class petsAdminToTenant {
 	private String baseUrl;
 	private String username;
 	private String password;
-	private String tenant;
 	private String tenantusername;
 	private String tenantpassword;
-	private String tenantviolation;
-	private String depedentname;
 	private String animaltype;
 	private String animalname;
+	private String animalnamecoded;
 
 	@BeforeTest
 	public void setup() throws InterruptedException {
@@ -65,7 +59,7 @@ public class petsAdminToTenant {
 			baseUrl = properties.getProperty("base.url");
 			username = properties.getProperty("username");
 			password = properties.getProperty("password");
-			tenant = properties.getProperty("tenant");
+			properties.getProperty("tenant");
 			tenantusername = properties.getProperty("tenantusername");
 			tenantpassword = properties.getProperty("tenantpassword");
 
@@ -98,7 +92,7 @@ public class petsAdminToTenant {
 	private void login() throws InterruptedException {
 
 		// login code
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 
 		WebElement email = driver.findElement(By.xpath("/html/body/div[2]/div/div/form/div[1]/input"));
 		email.sendKeys(username);
@@ -109,7 +103,7 @@ public class petsAdminToTenant {
 		WebElement loginButton = driver.findElement(By.xpath("/html/body/div[2]/div/div/form/button"));
 		loginButton.click();
 
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		WebElement userName = driver.findElement(By.xpath("/html/body/div[2]/div/nav/div/div[2]/div[1]/a/span[1]"));
 		AssertJUnit.assertEquals(userName.getText(), userName.getText());
 
@@ -122,7 +116,7 @@ public class petsAdminToTenant {
 
 		randomGenerator.Visitor visitor = randomGenerator.generateRandomContact();
 
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 
 		WebElement manageContractSection = driver
 				.findElement(By.xpath("/html/body/div[2]/div/nav/div/div[3]/div[3]/div/div/div[2]/div[1]"));
@@ -137,7 +131,7 @@ public class petsAdminToTenant {
 		viewTenantData.click();
 
 		WebElement petsTab = driver
-				.findElement(By.xpath("//button[3]//div[1]"));
+				.findElement(By.xpath("//button[contains(@class, 'grid items-center') and .//div[text()='Pets']]"));
 
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("arguments[0].scrollIntoView(true);", petsTab);
@@ -151,22 +145,17 @@ public class petsAdminToTenant {
 		WebElement newPet = driver.findElement(By.xpath("//input[@id='newPet']"));
 		newPet.click();
 		
-		Thread.sleep(2000);
+		
 		WebElement animal = driver.findElement(By.xpath("/html[1]/body[1]/div[5]/div[1]/div[2]/form[1]/div[2]/form[1]/div[1]/div[2]/div[1]/div[1]"));
 		animal.click();
-		
-		/*
-		 * WebElement search =
-		 * driver.findElement(By.xpath("//input[@role='searchbox']"));
-		 * search.sendKeys("Cat");
-		 */
 		
 		WebElement animalOption = driver.findElement(By.xpath("/html[1]/body[1]/div[6]/div[2]/ul[1]/li[1]"));
 		animaltype = animalOption.getText();
 		animalOption.click();
 		
 		WebElement animalName = driver.findElement(By.xpath("//div[@class='p-dialog-mask p-component-overlay p-component-overlay-enter']//div[3]//div[1]//input[1]"));
-		animalname = "Zoro";
+		animalname = "Zoro" + visitor.numbers;
+		animalnamecoded = animalname;
 		animalName.sendKeys(animalname);
 		
 		WebElement submitPet = driver
@@ -180,7 +169,7 @@ public class petsAdminToTenant {
 	@Test(priority = 1)
 	private void tenantLogin() throws InterruptedException { // login code
 
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		driver.navigate().to("https://automation.yarncloud.dev/tenant/auth/login");
 
 		WebElement email = driver.findElement(By.xpath("/html/body/div[1]/main/div/div/div[3]/form/div[1]/input"));
@@ -202,7 +191,7 @@ public class petsAdminToTenant {
 	
 	@Test (priority = 2)
 	private void checkPetData() {
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 
 		WebElement myPetsTab = driver.findElement(By.linkText("My Pets"));
 		myPetsTab.click();
@@ -218,7 +207,7 @@ public class petsAdminToTenant {
         System.out.println("Pet Name: " + petName);
         System.out.println("Pet Type: " + petType);
 		
-		Assert.assertEquals(animalname, petName);
+		Assert.assertEquals(animalnamecoded, petName);
 		Assert.assertEquals(animaltype, petType);
         
         

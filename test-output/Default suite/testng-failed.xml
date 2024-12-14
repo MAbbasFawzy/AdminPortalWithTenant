@@ -3,14 +3,13 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="AdminPortal.RegressionTestCases.invoicesPayment">
+      <class name="AdminPortal.RegressionTestCases.broadcastAdminToTenant">
         <methods>
           <include name="setup"/>
-          <include name="addNewInvoice"/>
-          <include name="checkInvoiceNumberStatusAndDescription"/>
-          <include name="erpSystem"/>
+          <include name="checkBroadcast"/>
+          <include name="tearDown"/>
         </methods>
-      </class> <!-- AdminPortal.RegressionTestCases.invoicesPayment -->
+      </class> <!-- AdminPortal.RegressionTestCases.broadcastAdminToTenant -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

@@ -20,7 +20,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 public class broadcastAdminToTenant {
-	
+
 	WebDriver driver;
 	WebDriverWait wait;
 
@@ -30,10 +30,8 @@ public class broadcastAdminToTenant {
 	private String tenant;
 	private String tenantusername;
 	private String tenantpassword;
-	private String tenantviolation;
-	private String depedentname;
-	private String storedVehicleNumber;
 	private String subject;
+	private String broadcastcoded;
 
 	@BeforeTest
 	public void setup() throws InterruptedException {
@@ -45,9 +43,12 @@ public class broadcastAdminToTenant {
 		login();
 	}
 
-	/*
-	 * @AfterTest public void tearDown() { if (driver != null) { driver.quit(); } }
-	 */
+	@AfterTest
+	public void tearDown() {
+		if (driver != null) {
+			driver.quit();
+		}
+	}
 
 	private void loadProperties() {
 		Properties properties = new Properties();
@@ -93,7 +94,7 @@ public class broadcastAdminToTenant {
 	private void login() throws InterruptedException {
 
 		// login code
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 
 		WebElement email = driver.findElement(By.xpath("/html/body/div[2]/div/div/form/div[1]/input"));
 		email.sendKeys(username);
@@ -104,7 +105,7 @@ public class broadcastAdminToTenant {
 		WebElement loginButton = driver.findElement(By.xpath("/html/body/div[2]/div/div/form/button"));
 		loginButton.click();
 
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		WebElement userName = driver.findElement(By.xpath("/html/body/div[2]/div/nav/div/div[2]/div[1]/a/span[1]"));
 		AssertJUnit.assertEquals(userName.getText(), userName.getText());
 
@@ -113,60 +114,69 @@ public class broadcastAdminToTenant {
 	@Test(priority = 0)
 	public void openBroadcastePage() {
 
-		driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		WebElement broadcastMenuItem = driver
 				.findElement(By.xpath("/html/body/div[2]/div/nav/div/div[3]/div[2]/div/div/div[2]/div[1]/div"));
 		broadcastMenuItem.click();
 
-		WebElement addNewBroadcast = driver.findElement(By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[1]/div/div/div/a"));
+		WebElement addNewBroadcast = driver
+				.findElement(By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[1]/div/div/div/a"));
 		addNewBroadcast.click();
-		
-		
 
 	}
-	
+
 	@Test(priority = 1)
-	public void broadcastDataAddition() {
+	public void broadcastDataAddition() throws InterruptedException {
+		
+		randomGenerator.Visitor visitor = randomGenerator.generateRandomContact();
 
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
 		WebElement propertyList = driver
-				.findElement(By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/form/div/div[1]/div[1]/div/div"));
+				.findElement(By.xpath("//div[@class='p-multiselect p-component p-inputwrapper p-multiselect-chip w-full h-10 flex items-center property-dropdown w-fit']//div[@class='p-multiselect-label-container']"));
 		propertyList.click();
+		
+		WebElement searchPropertyList = driver.findElement(By.xpath("//input[@role='searchbox']"));
+		searchPropertyList.sendKeys("Property 1");
 
-		WebElement propertyListOption = driver.findElement(By.xpath("/html/body/div[5]/div[2]/ul/li[1]"));
+		Thread.sleep(2000);
+		WebElement propertyListOption = driver.findElement(By.xpath("//li[contains(@class, 'p-multiselect-item') and contains(., 'Property 1')]"));
 		propertyListOption.click();
 		propertyList.click();
-		
-		WebElement tenantList = driver.findElement(By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/form/div/div[1]/div[2]/div/div/div"));
+
+		WebElement tenantList = driver
+				.findElement(By.xpath("//div[contains(@class, 'p-multiselect') and contains(., 'Tenant Selected')]"));
 		tenantList.click();
 		
-		WebElement tenantListOption = driver.findElement(By.xpath("/html/body/div[5]/div[2]/ul/li[2]"));
+		WebElement searchTenantList = driver.findElement(By.xpath("//input[@role='searchbox']"));
+		searchTenantList.sendKeys("yarn.user.tenant");
+
+		WebElement tenantListOption = driver.findElement(By.xpath("//li[contains(@class, 'p-multiselect-item') and contains(., 'yarn.user.tenant - (1)')]"));
 		tenantListOption.click();
 		tenantList.click();
-		
-		WebElement subjectBroadcast = driver.findElement(By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/form/div/div[1]/div[4]/div/input"));
-		subject = "New broadcast from admin";
+
+		WebElement subjectBroadcast = driver
+				.findElement(By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/form/div/div[1]/div[4]/div/input"));
+		subject = "New broadcast from admin" + " " + visitor.numbers;
+		broadcastcoded = subject;
 		subjectBroadcast.sendKeys(subject);
-		
-		WebElement broadcastBody = driver.findElement(By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/form/div/div[1]/div[7]/div[2]/div[2]/div"));
-		broadcastBody.sendKeys("New broadcast from admin");
-		
-		
-		
-		WebElement submitButton = driver.findElement(By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/form/div/div[2]/div[2]/div[2]/div/button[2]"));
+
+		WebElement broadcastBody = driver.findElement(
+				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/form/div/div[1]/div[7]/div[2]/div[2]/div"));
+		broadcastBody.sendKeys(subject);
+
+		WebElement submitButton = driver.findElement(
+				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/form/div/div[2]/div[2]/div[2]/div/button[2]"));
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("arguments[0].scrollIntoView(true);", submitButton);
 		submitButton.click();
 	}
-	
-	@Test (priority = 2)
+
+	@Test(priority = 2)
 	private void tenantLogin() throws InterruptedException { // login code
 
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+		
 		driver.navigate().to("https://automation.yarncloud.dev/tenant/auth/login");
-
-		Thread.sleep(6000);
-
 		WebElement email = driver.findElement(By.xpath("/html/body/div[1]/main/div/div/div[3]/form/div[1]/input"));
 		email.sendKeys(tenantusername);
 
@@ -183,21 +193,23 @@ public class broadcastAdminToTenant {
 
 		Thread.sleep(2000);
 	}
-	
-	@Test (priority = 3)
+
+	@Test(priority = 3)
 	private void checkBroadcast() {
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+
 		WebElement broadcastIcon = driver.findElement(By.xpath("/html/body/div[1]/main/nav[1]/div/div[1]/div[2]/a[2]"));
 		broadcastIcon.click();
-		
-		WebElement broadcastTenant = driver.findElement(By.xpath("/html/body/div[1]/main/div/div/div[3]/div[2]/div[3]/div/div/a"));
+
+		WebElement broadcastTenant = driver
+				.findElement(By.xpath("/html/body/div[1]/main/div/div/div[3]/div[2]/div[3]/div/div/a"));
 		broadcastTenant.click();
-		
-		WebElement broadcastBodyTenant = driver.findElement(By.xpath("/html/body/div[1]/main/div/div/div[2]/div[3]/div/div/div[2]/p"));
+
+		WebElement broadcastBodyTenant = driver
+				.findElement(By.xpath("/html/body/div[1]/main/div/div/div[2]/div[3]/div/div/div[2]/p"));
 		broadcastBodyTenant.getText();
-		
-		Assert.assertEquals(subject, broadcastBodyTenant.getText());
+
+		Assert.assertEquals(broadcastcoded, broadcastBodyTenant.getText());
 	}
 
 }

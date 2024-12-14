@@ -109,7 +109,7 @@ public class invoicesPayment {
 		WebElement propertyOptionSelection = driver.findElement(By.xpath("/html/body/div[5]/div[2]/ul/li[1]"));
 		propertyOptionSelection.click();
 
-		
+		Thread.sleep(2000);
 		WebElement unitDropDownList = driver
 				.findElement(By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/form/div[2]/div[2]/div"));
 		unitDropDownList.click();
@@ -147,7 +147,7 @@ public class invoicesPayment {
 
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv_id_20_panel")));
 
-		
+		Thread.sleep(1000);
 		WebElement dateToSelect = driver.findElement(By.xpath("//td[@aria-label='12']"));
 		dateToSelect.click();
 
@@ -159,9 +159,10 @@ public class invoicesPayment {
 				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/form/div[8]/div[2]/div/span/input"));
 		dueDateInput.click();
 
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv_id_21_panel")));
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+				"//div[@class='p-datepicker p-component p-ripple-disabled' and @role='dialog' and @aria-label='Choose Date']")));
 
-		
+		Thread.sleep(1000);
 		WebElement dueDateToSelect = driver.findElement(By.xpath("//td[@aria-label='12']"));
 		dueDateToSelect.click();
 
@@ -191,34 +192,34 @@ public class invoicesPayment {
 		driver.navigate().to(
 				"https://automation.erp.yarncloud.dev/web#menu_id=184&action=295&model=account.move&view_type=list");
 
-		Thread.sleep(8000);
+		Thread.sleep(2000);
 		WebElement tenantUser = driver
 				.findElement(By.xpath("/html/body/div[1]/div/div[4]/div/div[1]/table/tbody/tr[1]/td[3]"));
 		tenantUser.getText();
 		tenantUser.click();
 
-		Thread.sleep(6000);
+		Thread.sleep(2000);
 		WebElement confirmInvoiceButton = driver
 				.findElement(By.xpath("/html/body/div[1]/div/div[2]/div/div[1]/div[1]/div[1]/button[2]"));
 		confirmInvoiceButton.click();
 
-		Thread.sleep(6000);
+		Thread.sleep(2000);
 		WebElement adminPortalInvoice = driver
 				.findElement(By.xpath("/html/body/div[1]/div/div[2]/div/div[1]/div[15]/div[8]/h1[2]/span"));
 
 		storedInvoiceNumber = adminPortalInvoice.getText();
 
-		Thread.sleep(6000);
+		Thread.sleep(2000);
 		WebElement registerPayment = driver
 				.findElement(By.xpath("/html/body/div[1]/div/div[2]/div/div[1]/div[1]/div[1]/button[5]"));
 		registerPayment.click();
 
-		Thread.sleep(6000);
+		Thread.sleep(4000);
 		WebElement confirmPayment = driver
 				.findElement(By.xpath("/html/body/div[2]/div[5]/div/div/div/div/footer/div/footer/button[1]"));
 		confirmPayment.click();
 		
-		Thread.sleep(6000);
+		Thread.sleep(4000);
 
 	}
 
@@ -228,7 +229,7 @@ public class invoicesPayment {
 		driver.manage().timeouts().implicitlyWait(50, TimeUnit.SECONDS);
 		driver.navigate().to("https://automation.yarncloud.dev/tenant/auth/login");
 
-		Thread.sleep(6000);
+		//Thread.sleep(6000);
 
 		WebElement email = driver.findElement(By.xpath("/html/body/div[1]/main/div/div/div[3]/form/div[1]/input"));
 		email.sendKeys(tenantusername);

@@ -3,17 +3,16 @@ package AdminPortal.RegressionTestCases;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.NoSuchElementException;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.AssertJUnit;
@@ -29,11 +28,8 @@ public class vehicleAdminToTenant extends randomGenerator {
 	private String baseUrl;
 	private String username;
 	private String password;
-	private String tenant;
 	private String tenantusername;
 	private String tenantpassword;
-	private String tenantviolation;
-	private String depedentname;
 	private String storedVehicleNumber;
 
 	@BeforeTest
@@ -64,7 +60,7 @@ public class vehicleAdminToTenant extends randomGenerator {
 			baseUrl = properties.getProperty("base.url");
 			username = properties.getProperty("username");
 			password = properties.getProperty("password");
-			tenant = properties.getProperty("tenant");
+			properties.getProperty("tenant");
 			tenantusername = properties.getProperty("tenantusername");
 			tenantpassword = properties.getProperty("tenantpassword");
 
@@ -97,7 +93,7 @@ public class vehicleAdminToTenant extends randomGenerator {
 	private void login() throws InterruptedException {
 
 		// login code
-		driver.manage().timeouts().implicitlyWait(50, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 
 		WebElement email = driver.findElement(By.xpath("/html/body/div[2]/div/div/form/div[1]/input"));
 		email.sendKeys(username);
@@ -108,7 +104,7 @@ public class vehicleAdminToTenant extends randomGenerator {
 		WebElement loginButton = driver.findElement(By.xpath("/html/body/div[2]/div/div/form/button"));
 		loginButton.click();
 
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		WebElement userName = driver.findElement(By.xpath("/html/body/div[2]/div/nav/div/div[2]/div[1]/a/span[1]"));
 		AssertJUnit.assertEquals(userName.getText(), userName.getText());
 
@@ -117,7 +113,7 @@ public class vehicleAdminToTenant extends randomGenerator {
 	@Test(priority = 0)
 	public void openVehiclePage() throws InterruptedException {
 
-		driver.manage().timeouts().implicitlyWait(50, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		WebElement vehicleMenuItem = driver
 				.findElement(By.xpath("/html/body/div[2]/div/nav/div/div[3]/div[6]/div/div/div[2]/div[1]/div"));
 		vehicleMenuItem.click();
@@ -153,10 +149,12 @@ public class vehicleAdminToTenant extends randomGenerator {
 
 		randomGenerator.Visitor visitor = randomGenerator.generateRandomContact();
 
-		driver.manage().timeouts().implicitlyWait(50, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 
-		WebElement tenantList = wait.until(ExpectedConditions.elementToBeClickable(By
-				.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/div/div[2]/form/div[1]/div[1]/div/div")));
+		
+		FluentWait<WebDriver> wait = new FluentWait<>(driver).withTimeout(Duration.ofSeconds(50)).pollingEvery(Duration.ofSeconds(5)).ignoring(NoSuchElementException.class);
+		
+		WebElement tenantList = wait.until(ExpectedConditions.visibilityOfElementLocated((By.xpath("/html[1]/body[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[2]/div[1]/div[2]/form[1]/div[1]/div[1]/div[1]/div[1]"))));
 		tenantList.click();
 
 		Thread.sleep(2000);
@@ -176,6 +174,7 @@ public class vehicleAdminToTenant extends randomGenerator {
 				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/div/div[2]/form/div[2]/div[1]/input"));
 		storedVehicleNumber = visitor.letters + "-" + visitor.vehiclenumber;
 		carPlateNumber.sendKeys(visitor.letters + "-" + visitor.vehiclenumber);
+		Thread.sleep(500);
 
 		WebElement carColor = driver.findElement(
 				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/div/div[2]/form/div[2]/div[2]/input"));
@@ -209,7 +208,7 @@ public class vehicleAdminToTenant extends randomGenerator {
 	@Test(priority = 1)
 	private void tenantLogin() throws InterruptedException { // login code
 
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		driver.navigate().to("https://automation.yarncloud.dev/tenant/auth/login");
 
 		WebElement email = driver.findElement(By.xpath("/html/body/div[1]/main/div/div/div[3]/form/div[1]/input"));
@@ -231,7 +230,7 @@ public class vehicleAdminToTenant extends randomGenerator {
 	@Test(priority = 2)
 	private void checkVehicleAdded() throws InterruptedException {
 
-		driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 
 		WebElement vehiclesTab = driver.findElement(By.linkText("My Vehicles"));
 		vehiclesTab.click();

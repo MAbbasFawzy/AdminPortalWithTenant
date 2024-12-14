@@ -31,7 +31,6 @@ public class subscriptionActivation {
 	private String baseUrl;
 	private String username;
 	private String password;
-	private String tenant;
 	private String tenanturl;
 	private String tenantusername;
 	private String tenantpassword;
@@ -62,7 +61,7 @@ public class subscriptionActivation {
 			tenanturl = properties.getProperty("tenant.url");
 			username = properties.getProperty("username");
 			password = properties.getProperty("password");
-			tenant = properties.getProperty("tenant");
+			properties.getProperty("tenant");
 			tenantusername = properties.getProperty("tenantusername");
 			tenantpassword = properties.getProperty("tenantpassword");
 
