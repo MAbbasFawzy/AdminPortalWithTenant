@@ -243,13 +243,20 @@ public class documentAdminToTenant {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.presenceOfElementLocated(By.className("delete-icon")));
 
-        // Locate all delete icons
-        List<WebElement> deleteIcons = driver.findElements(By.className("delete-icon"));
+        // Loop until there are no more delete icons
+        while (true) {
+            // Re-locate the delete icons
+            List<WebElement> deleteIcons = driver.findElements(By.className("delete-icon"));
 
-        // Click on each delete icon and confirm deletion
-        for (WebElement deleteIcon : deleteIcons) {
+            // Break the loop if there are no delete icons left
+            if (deleteIcons.isEmpty()) {
+                break;
+            }
+
+            // Click on the first delete icon
+            WebElement deleteIcon = deleteIcons.get(0);
+
             // Highlight the element (optional)
-        	
             highlightElement(driver, deleteIcon);
 
             // Click on the delete icon
@@ -263,7 +270,7 @@ public class documentAdminToTenant {
             confirmDeleteButton.click();
 
             // Optionally, you may want to add a small delay to observe the action
-            Thread.sleep(1000); // Adjust the sleep time as needed
+            Thread.sleep(500); // Adjust the sleep time as needed
         }
 	}
 }
