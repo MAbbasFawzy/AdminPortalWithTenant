@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Suite" parallel="false">
-  <test thread-count="5" name="Test">
+<suite parallel="methods" name="Suite">
+  <test thread-count="5" parallel="methods" name="Test">
     <classes>
       <class name="AdminPortal.RegressionTestCases.broadcastAdminToTenant"/>
       <class name="AdminPortal.RegressionTestCases.petsAdminToTenant"/>
       <class name="AdminPortal.RegressionTestCases.documentAdminToTenant"/>
       <class name="AdminPortal.RegressionTestCases.invoicesPayment"/>
+      <class name="AdminPortal.RegressionTestCases.violationStatusWindowHandle"/>
       <class name="AdminPortal.RegressionTestCases.messagesAdminToTenant"/>
-      <class name="AdminPortal.RegressionTestCases.changeCreds"/>
       <class name="AdminPortal.RegressionTestCases.violationsStatus"/>
+      <class name="AdminPortal.RegressionTestCases.changeCreds"/>
       <class name="AdminPortal.RegressionTestCases.requestStatusChange"/>
       <class name="AdminPortal.RegressionTestCases.dependentAdminToPortal"/>
-      <class name="AdminPortal.RegressionTestCases.invoicesDue"/>
       <class name="AdminPortal.RegressionTestCases.vehicleAdminToTenant"/>
+      <class name="AdminPortal.RegressionTestCases.invoicesDue"/>
+      <class name="AdminPortal.RegressionTestCases.requestActivation"/>
       <class name="AdminPortal.RegressionTestCases.contactUsTenantToAdmin"/>
       <class name="AdminPortal.RegressionTestCases.subscriptionActivation"/>
     </classes>

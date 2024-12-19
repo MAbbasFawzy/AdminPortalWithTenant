@@ -7,7 +7,7 @@ public class randomGenerator {
 	private static final String[] FIRST_NAMES = {"John", "Jane", "Bob", "Alice", "Mike", "Sarah", "Emily", "David"};
     private static final String[] LAST_NAMES = {"Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson"};
     private static final String[] EMAIL_DOMAINS = {"gmail.com", "yahoo.com", "hotmail.com", "outlook.com"};
-    private static final String[] NUMBERS = {"210", "215", "315", "450", "500", "100", "150", "200", "180"};
+    
     private static final String[] VEHICLE_NUMBER = {"2100", "2105", "3105", "4050", "5000", "0100", "0150", "0200", "0180"};
     private static final String[] VEHICLE_LETTERS = {"zxc", "asd", "qwe", "sdf", "xcv", "wer", "dfg", "cvb", "ert"};
 
@@ -51,9 +51,14 @@ public class randomGenerator {
         String letters = VEHICLE_LETTERS[random.nextInt(VEHICLE_LETTERS.length)];
 
         // Generate random phone number and car plate number
-        String numbers = NUMBERS[random.nextInt(NUMBERS.length)];
+        int randomInt = random.nextInt(900) + 100;
+        
+        String numbers = String.valueOf(randomInt);
+        
         String vehiclenumber = VEHICLE_NUMBER[random.nextInt(VEHICLE_NUMBER.length)];
-        String phoneNumberSuffix = String.valueOf(random.nextInt(1000000));
+        
+        String phoneNumberSuffix = String.valueOf(random.nextInt(100));
+        
         String phoneNumber = numbers + "-" + phoneNumberSuffix;
 
         // Return the generated contact information

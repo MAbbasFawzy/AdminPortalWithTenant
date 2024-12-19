@@ -1,15 +1,19 @@
 package AdminPortal.RegressionTestCases;
 
+import static org.testng.Assert.assertEquals;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -20,10 +24,13 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-public class violationsStatus {
+public class violationStatusWindowHandle {
 
 	WebDriver driver = new ChromeDriver();
 	WebDriverWait wait;
+
+	public String adminWindow;
+	public String tenantWindow;
 
 	private String baseUrl;
 	private String username;
@@ -31,6 +38,7 @@ public class violationsStatus {
 	private String tenantusername;
 	private String tenantpassword;
 	private String violationsubject;
+	private String violationcoded;
 
 	@BeforeTest
 	public void setup() throws InterruptedException {
@@ -47,6 +55,7 @@ public class violationsStatus {
 			driver.quit();
 		}
 	}
+	 
 
 	private void loadProperties() {
 		Properties properties = new Properties();
@@ -95,6 +104,8 @@ public class violationsStatus {
 	@Test(priority = 0)
 	public void addViolationAdminPortal() throws InterruptedException {
 
+		randomGenerator.Visitor visitor = randomGenerator.generateRandomContact();
+		
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
 		// Thread.sleep(2000);
 		WebElement violationTab = driver.findElement(By.linkText("Violations"));
@@ -117,7 +128,9 @@ public class violationsStatus {
 		// Thread.sleep(6000);
 		WebElement violationSubject = driver.findElement(By.xpath("//input[@placeholder='Subject']"));
 		
-		violationSubject.sendKeys(violationsubject);
+		violationcoded = violationsubject + " " + visitor.numbers;
+		
+		violationSubject.sendKeys(violationcoded);
 
 		// Thread.sleep(2000);
 		WebElement violationCategory = driver
@@ -139,7 +152,6 @@ public class violationsStatus {
         
         WebElement reportByListOption = driver.findElement(By.xpath("//li[contains(@class, 'p-dropdown-item') and .//span[text()='Yarn Support']]"));
         reportByListOption.click();
-        
         
 
 		// Thread.sleep(2000);
@@ -191,72 +203,63 @@ public class violationsStatus {
 				"/html[1]/body[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/span[2]"));
 		System.out.println(violationCategoryDetails.getText());
 		violationCategoryDetails.getText();
-		violationCategoryDetails.getText();
+		
 
 		// Thread.sleep(2000);
 		WebElement violationCreatedDate = driver.findElement(By.xpath(
 				"/html[1]/body[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/div[1]/div[5]/span[2]/span[1]"));
 		System.out.println(violationCreatedDate.getText());
 		violationCreatedDate.getText();
-		violationCreatedDate.getText();
-
-		// Thread.sleep(2000);
-		WebElement actionsList = driver.findElement(By.xpath("//i[@class='fa-solid fa-ellipsis-vertical']"));
-		actionsList.click();
-
-		// Thread.sleep(2000);
-		WebElement resolveAction = driver.findElement(By.xpath("//span[normalize-space()='Resolved']"));
-		resolveAction.click();
-
-		// Thread.sleep(2000);
-		WebElement confirm = driver.findElement(By.xpath("//button[normalize-space()='Yes']"));
-		confirm.click();
 		
-		Thread.sleep(6000);
+		WebElement violationIndexPage = driver.findElement(By.xpath("//a[normalize-space()='Manage Violations']"));
+		violationIndexPage.click();
+		
+		// Locate the table
+        WebElement table = driver.findElement(By.cssSelector(".table.table-striped.table-bordered.table-hover"));
 
+        // Locate all rows in the table body
+        List<WebElement> rows = table.findElements(By.xpath(".//tbody/tr"));
+
+		// Check if there is at least one row
+		if (!rows.isEmpty()) {
+			// Get the first row
+			WebElement firstRow = rows.get(0);
+
+			// Extract data from each cell in the first row
+			List<WebElement> cells = firstRow.findElements(By.xpath(".//td"));
+			String cellData = cells.get(2).getText();
+			System.out.println("Cell " + (3) + ": " + cellData);
+			
+			// Assert and print result
+			try {
+				Assert.assertEquals(cellData, violationcoded);
+                System.out.println("Assertion passed for new violation.");
+            } catch (AssertionError e) {
+                System.out.println("Assertion failed:" + " " + "expected " + violationcoded + " but got " + cellData);
+            }
+			
+			
+		} else {
+			System.out.println("No rows found in the table.");
+		}
 	}
 	
-	@Test(priority = 1)
-	private void violationsTable() {
+	@Test (priority = 1)
+	public void checkViolationAddedTenant() throws InterruptedException {
 		
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
-		WebElement manageViolationsPage = driver.findElement(By.xpath("//a[normalize-space()='Manage Violations']"));
-		manageViolationsPage.click();
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        
+        // Step 1: Store the admin window handle
+        adminWindow = driver.getWindowHandle();
+        
+        // Step 2: Open a new tab
+        driver.switchTo().newWindow(WindowType.TAB);
 		
-		// Wait for the table to be present
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".table-responsive")));
-
-        // Locate the first row of the table
-        WebElement firstRow = driver.findElement(By.xpath("//table[@class='table table-striped table-bordered table-hover']/tbody/tr[1]"));
-
-        // Extract all the required data
-        String id = firstRow.findElement(By.cssSelector("td:nth-child(1)")).getText(); // ID
-        String status = firstRow.findElement(By.cssSelector("td:nth-child(2) .badge")).getText(); // Status
-        String subject = firstRow.findElement(By.cssSelector("td:nth-child(3)")).getText(); // Subject
-        String violationCategory = firstRow.findElement(By.cssSelector("td:nth-child(4)")).getText(); // Violation Category
-        String location = firstRow.findElement(By.cssSelector("td:nth-child(5) span")).getText(); // Location
-        String penalty = firstRow.findElement(By.cssSelector("td:nth-child(6)")).getText(); // Penalty
-        String violationDate = firstRow.findElement(By.cssSelector("td:nth-child(7)")).getText(); // Violation Date
-        String people = firstRow.findElement(By.cssSelector("td:nth-child(8) .underline")).getText(); // People
-        // Print the extracted data
-        System.out.println("ID: " + id);
-        System.out.println("Status: " + status);
-        System.out.println("Subject: " + subject);
-        System.out.println("Violation Category: " + violationCategory);
-        System.out.println("Location: " + location);
-        System.out.println("Penalty: " + penalty);
-        System.out.println("Violation Date: " + violationDate);
-        System.out.println("People: " + people);
-	}
-
-	@Test(priority = 2)
-	private void tenantLogin() throws InterruptedException {
-		// login code
-
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
-		driver.navigate().to("https://automation.yarncloud.dev/tenant/auth/login");
-
-		// Thread.sleep(2000);
+        // Step 3: Navigate to the new URL in the new tab
+        driver.get("https://automation.yarncloud.dev/tenant/auth/login");
+        
+        // Step 4: Store the tenant window handle
+        tenantWindow = driver.getWindowHandle();
 
 		WebElement email = driver.findElement(By.xpath("/html/body/div[1]/main/div/div/div[3]/form/div[1]/input"));
 		email.sendKeys(tenantusername);
@@ -271,13 +274,7 @@ public class violationsStatus {
 
 		WebElement userName = driver.findElement(By.xpath("//*[@id=\"__nuxt\"]/main/nav[1]/div/div[1]/div[2]/span[2]"));
 		AssertJUnit.assertEquals(tenantusername, userName.getText());
-
 		
-	}
-
-	@Test(priority = 3)
-	private void checkTenantViolation() throws InterruptedException {
-
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 
 		WebElement myViolations = driver.findElement(By.linkText("My Violations"));
@@ -285,35 +282,77 @@ public class violationsStatus {
 		
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
 
-        // Wait for the grid to be present
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("sm:grid")));
+		// Get the violation cell data 
+		WebElement violationData = driver.findElement(By.xpath("//a[1]//div[1]//div[2]//p[1]"));
 
-        // Locate the grid container
-        WebElement gridContainer = driver.findElement(By.className("sm:grid"));
-
-        // Find all rows in the grid (assuming each row is an <a> element)
-        List<WebElement> rows = gridContainer.findElements(By.cssSelector("a.justify-between.items-center"));
-
-        // Get the last row
-        WebElement lastRow = rows.get(rows.size() - 1);
-
-        // Extract data from the last row
-        String status = lastRow.findElement(By.cssSelector("span.rounded-lg")).getText();
-        String subject = lastRow.findElement(By.cssSelector("div.col-span-2 p")).getText();
-        String date = lastRow.findElement(By.cssSelector("div.col-span-2 .text-nowrap")).getText();
-        String time = lastRow.findElements(By.cssSelector("div.col-span-2 .text-nowrap")).get(1).getText();
-        
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
-
-        // Print the extracted data
-        System.out.println("Status: " + status);
-        System.out.println("Subject: " + subject);
-        System.out.println("Date: " + date);
-        System.out.println("Time: " + time);
-        
+		String cellDataTenant = violationData.getText();
+		
+		// Assert and print result
+		try {
+			Assert.assertEquals(cellDataTenant, violationcoded);
+			System.out.println("Assertion passed for new violation Tenant.");
+		} catch (AssertionError e) {
+			System.out.println("Assertion failed:" + " " + "expected " + violationcoded + " but got " + cellDataTenant);
+		}     
+		
+	}
+	
+	
+	
+	@Test(priority = 2)
+	public void resolveViolationAdminPortal() {
+		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+		
+		driver.switchTo().window(adminWindow);
+	
+		WebElement viewViolation = driver.findElement(By.xpath("//tbody/tr[1]/td[9]/a[1]"));
+		viewViolation.click();
 
 		
-		Assert.assertEquals(violationsubject, violationsubject);
+		// Thread.sleep(2000);
+		WebElement actionsList = driver.findElement(By.xpath("//i[@class='fa-solid fa-ellipsis-vertical']"));
+		actionsList.click();
+
+		// Thread.sleep(2000);
+		WebElement resolveAction = driver.findElement(By.xpath("//span[normalize-space()='Resolved']"));
+		resolveAction.click();
+
+		// Thread.sleep(2000);
+		WebElement confirm = driver.findElement(By.xpath("//button[normalize-space()='Yes']"));
+		confirm.click();	 
 	}
+
+	
+
+	@Test(priority = 2)
+	private void tenantViolations() throws InterruptedException {
+
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+
+		Thread.sleep(500);
+		
+		driver.switchTo().window(tenantWindow);
+		
+		Thread.sleep(500);
+		
+		// Refresh the page
+        driver.navigate().refresh();       
+        Thread.sleep(500);
+        
+        WebElement violationStatus = driver.findElement(By.xpath("//span[normalize-space()='Closed']"));
+        
+        
+		// Assert and print result
+		try {
+			Assert.assertEquals(violationStatus.getText(), "Closed");
+			System.out.println("The violation status has changed to closed successfully on tenant portal.");
+		} catch (AssertionError e) {
+			System.out.println("The violation status didn't change to closed successfully.");
+		}
+        
+	}
+
+	
+	 
 }

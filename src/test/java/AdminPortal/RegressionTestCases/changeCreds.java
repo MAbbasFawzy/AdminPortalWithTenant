@@ -3,8 +3,10 @@ package AdminPortal.RegressionTestCases;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -12,6 +14,8 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterTest;
@@ -32,6 +36,7 @@ public class changeCreds {
 	private String tenantpassword;
 	private String tenantviolation;
 	private String newpassword;
+	private String newusername;
 
 	@BeforeTest
 	public void setup() throws InterruptedException {
@@ -42,9 +47,14 @@ public class changeCreds {
 		login();
 	}
 
-	/*
-	 * @AfterTest public void tearDown() { if (driver != null) { driver.quit(); } }
-	 */
+	
+	@AfterTest
+	public void tearDown() {
+		if (driver != null) {
+			driver.quit();
+		}
+	}
+	 
 
 	private void loadProperties() {
 		Properties properties = new Properties();
@@ -61,6 +71,8 @@ public class changeCreds {
 			tenantusername = properties.getProperty("tenantusername");
 			tenantpassword = properties.getProperty("tenantpassword");
 			newpassword = properties.getProperty("newpassword");
+			newusername = properties.getProperty("newtenantusername");
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -70,7 +82,7 @@ public class changeCreds {
 	private void login() throws InterruptedException {
 
 		// login code
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		Thread.sleep(4000);
 		WebElement email = driver.findElement(By.xpath("/html/body/div[2]/div/div/form/div[1]/input"));
 		email.sendKeys(username);
@@ -92,7 +104,7 @@ public class changeCreds {
 	@Test (priority = 0)
 	public void searchForUser() throws InterruptedException {
 		
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		WebElement peopleMenuItem = driver.findElement(By.xpath("/html[1]/body[1]/div[2]/div[1]/nav[1]/div[1]/div[3]/div[3]/div[1]/div[1]/div[3]/div[1]/div[1]/a[1]"));
 		peopleMenuItem.click();
 		
@@ -103,7 +115,7 @@ public class changeCreds {
 		searchInput.sendKeys("yarn.user.tenant");
 		searchInput.sendKeys(Keys.ENTER);
 		
-		Thread.sleep(6000);
+		//Thread.sleep(6000);
 		
 		WebElement viewTenant = driver.findElement(By.xpath("//a[@class='btn btn-outline btn-sm btn-primary']"));
 		JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -113,36 +125,47 @@ public class changeCreds {
 		WebElement userAccountInfo = driver.findElement(By.xpath("//a[normalize-space()='User Account Info']"));
 		userAccountInfo.click();
 		
-		Thread.sleep(2000);
+		//Thread.sleep(4000);
 		WebElement userCredsButton = driver.findElement(By.xpath("//button[@class='btn btn-primary']"));
 		userCredsButton.click();
 		
-		Thread.sleep(2000);
+		//Thread.sleep(4000);
+		WebElement newUsername = driver.findElement(By.xpath("//input[@placeholder='Enter the new username']"));
+		newUsername.sendKeys(newusername);
+		
+		//Thread.sleep(4000);
+		WebElement confirmNewUsername = driver.findElement(By.xpath("//input[@id='confirmUsername']"));
+		confirmNewUsername.sendKeys(newusername);
+		
+		//Thread.sleep(4000);
+		WebElement submitButtonUsername = driver.findElement(By.xpath("//div[4]//button[1]"));
+		submitButtonUsername.click();
+
+		//Thread.sleep(4000);
 		WebElement changePassword = driver.findElement(By.xpath("//a[normalize-space()='Change Password']"));
 		changePassword.click();
 		
-		Thread.sleep(2000);
+		//Thread.sleep(4000);
 		WebElement passwordInput = driver.findElement(By.xpath("//input[@placeholder='Enter the new password']"));
 		passwordInput.sendKeys(newpassword);
 		
 		WebElement confirmPassword = driver.findElement(By.xpath("//input[@id='confirm-password']"));
 		confirmPassword.sendKeys(newpassword);
 		
-		Thread.sleep(2000);
-		WebElement submitButton = driver.findElement(By.xpath("//div[@class='p-dialog-content']//div[2]//div[1]//div[3]//button[1]"));
-		submitButton.click();
+		//Thread.sleep(4000);
+		WebElement submitButtonPassword = driver.findElement(By.xpath("//div[@class='p-dialog-mask p-component-overlay p-component-overlay-enter']"));
 		
-		
+		submitButtonPassword.click();
 	}
 	
 	@Test(priority = 1)
 	private void tenantLogin() throws InterruptedException { // login code
 
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		driver.navigate().to("https://automation.yarncloud.dev/tenant/auth/login");
 
 		WebElement email = driver.findElement(By.xpath("/html/body/div[1]/main/div/div/div[3]/form/div[1]/input"));
-		email.sendKeys(tenantusername);
+		email.sendKeys(newusername);
 
 		WebElement passcode = driver
 				.findElement(By.xpath("/html/body/div[1]/main/div/div/div[3]/form/div[2]/div/input"));

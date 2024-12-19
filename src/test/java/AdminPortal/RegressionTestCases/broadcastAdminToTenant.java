@@ -138,13 +138,15 @@ public class broadcastAdminToTenant {
 		WebElement searchPropertyList = driver.findElement(By.xpath("//input[@role='searchbox']"));
 		searchPropertyList.sendKeys("Property 1");
 
-		Thread.sleep(2000);
+		// Thread.sleep(2000);
 		WebElement propertyListOption = driver.findElement(By.xpath("//li[contains(@class, 'p-multiselect-item') and contains(., 'Property 1')]"));
 		propertyListOption.click();
 		propertyList.click();
 
+		
+		Thread.sleep(2000);
 		WebElement tenantList = driver
-				.findElement(By.xpath("//div[contains(@class, 'p-multiselect') and contains(., 'Tenant Selected')]"));
+				.findElement(By.xpath("/html[1]/body[1]/div[2]/div[1]/div[1]/div[2]/div[3]/form[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]"));
 		tenantList.click();
 		
 		WebElement searchTenantList = driver.findElement(By.xpath("//input[@role='searchbox']"));
@@ -163,6 +165,10 @@ public class broadcastAdminToTenant {
 		WebElement broadcastBody = driver.findElement(
 				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/form/div/div[1]/div[7]/div[2]/div[2]/div"));
 		broadcastBody.sendKeys(subject);
+		
+		WebElement fileUpload = driver.findElement(By.xpath(
+				"//input[@accept='image/*,application/pdf,.docx,.doc']"));
+		fileUpload.sendKeys("C:\\Users\\eng_m\\eclipse-workspace\\AutomationTestCases\\logo-white.png");
 
 		WebElement submitButton = driver.findElement(
 				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/form/div/div[2]/div[2]/div[2]/div/button[2]"));

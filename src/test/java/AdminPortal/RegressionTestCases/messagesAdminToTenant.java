@@ -155,6 +155,11 @@ public class messagesAdminToTenant {
 		messageBody.sendKeys(messagebody);
 		
 		
+		// Thread.sleep(6000);
+		WebElement fileUpload = driver.findElement(By.xpath(
+				"//input[@accept='image/*,application/pdf,.docx,.doc']"));
+		fileUpload.sendKeys("C:\\Users\\eng_m\\eclipse-workspace\\AutomationTestCases\\logo-white.png");
+		
 		Thread.sleep(2000);
 		WebElement submitButton = driver.findElement(By.xpath("//span[normalize-space()='Send']"));
 		JavascriptExecutor js = (JavascriptExecutor) driver;
