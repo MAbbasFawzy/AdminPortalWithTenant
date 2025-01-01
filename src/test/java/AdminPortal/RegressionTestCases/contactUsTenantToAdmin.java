@@ -133,13 +133,13 @@ public class contactUsTenantToAdmin {
 		
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
 		
-		Thread.sleep(1000);
-		WebElement contactUsMessageCategory = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html[1]/body[1]/div[1]/main[1]/div[1]/div[1]/div[2]/form[1]/div[1]/div[1]")));
+		Thread.sleep(2000);
+		WebElement contactUsMessageCategory = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[contains(@class, 'p-dropdown') and @data-pc-name='dropdown']")));
 		Thread.sleep(1000); // Wait for 1 second
 		contactUsMessageCategory.click();
 
 		// Thread.sleep(6000);
-		WebElement contactUsCategory = driver.findElement(By.xpath("//*[@id=\"pv_id_2_0\"]"));
+		WebElement contactUsCategory = driver.findElement(By.xpath("//li[@aria-label='Complaint']"));
 		contactUsCategory.click();
 
 		// Thread.sleep(6000);
@@ -199,7 +199,7 @@ public class contactUsTenantToAdmin {
 	}
 	
 	@Test (priority = 3)
-	private void contactRequestCheck() {
+	private void contactRequestCheck() throws InterruptedException {
 		
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
 		
@@ -216,6 +216,7 @@ public class contactUsTenantToAdmin {
 		contactRequestSubject.getText();
 		
 		Assert.assertEquals(messagecoded, contactRequestSubject.getText());
+		Thread.sleep(1000);
 	}
 	
 

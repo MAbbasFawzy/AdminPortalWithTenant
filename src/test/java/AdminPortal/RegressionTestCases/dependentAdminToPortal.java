@@ -97,7 +97,7 @@ public class dependentAdminToPortal extends randomGenerator {
 	private void login() throws InterruptedException {
 
 		// login code
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
 
 		WebElement email = driver.findElement(By.xpath("/html/body/div[2]/div/div/form/div[1]/input"));
 		email.sendKeys(username);
@@ -119,7 +119,7 @@ public class dependentAdminToPortal extends randomGenerator {
 
 		randomGenerator.Visitor visitor = randomGenerator.generateRandomContact();
 
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
 
 		WebElement manageContractSection = driver
 				.findElement(By.xpath("/html/body/div[2]/div/nav/div/div[3]/div[3]/div/div/div[2]/div[1]"));
@@ -168,7 +168,7 @@ public class dependentAdminToPortal extends randomGenerator {
 				By.xpath("/html/body/div[5]/div/div[2]/div/form/div[3]/div[2]/div[1]/div[2]/div/div[6]/div[2]/div"));
 		dependentGender.click();
 
-		WebElement dependentGenderListOption = driver.findElement(By.xpath("/html/body/div[6]/div[2]/ul/li[1]"));
+		WebElement dependentGenderListOption = driver.findElement(By.xpath("//li[contains(@class, 'p-dropdown-item') and .//span[text()='Male']]"));
 		dependentGenderListOption.click();
 
 		WebElement submitDependent = driver
@@ -199,7 +199,7 @@ public class dependentAdminToPortal extends randomGenerator {
 	@Test(priority = 1)
 	private void tenantLogin() throws InterruptedException { // login code
 
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
 		driver.navigate().to("https://automation.yarncloud.dev/tenant/auth/login");
 
 		WebElement email = driver.findElement(By.xpath("/html/body/div[1]/main/div/div/div[3]/form/div[1]/input"));
@@ -222,7 +222,7 @@ public class dependentAdminToPortal extends randomGenerator {
 	@Test(priority = 2)
 	private void checkDependentAdded() throws InterruptedException {
 
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
 
 		WebElement dependentsTab = driver.findElement(By.linkText("My Dependents"));
 		dependentsTab.click();

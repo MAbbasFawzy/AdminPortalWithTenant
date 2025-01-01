@@ -17,6 +17,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.AssertJUnit;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -25,6 +26,10 @@ public class requestStatusChange {
 	
 	WebDriver driver;
 	WebDriverWait wait;
+	
+	public String adminWindow;
+	public String tenantWindow;
+
 
 	private String baseUrl;
 	private String username;
@@ -45,9 +50,12 @@ public class requestStatusChange {
 		login();
 	}
 
-	/*
-	 * @AfterClass public void tearDown() { if (driver != null) { driver.quit(); } }
-	 */
+	@AfterClass
+	public void tearDown() {
+		if (driver != null) {
+			driver.quit();
+		}
+	} 
 
 	private void loadProperties() {
 		Properties properties = new Properties();

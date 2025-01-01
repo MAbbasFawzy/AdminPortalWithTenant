@@ -195,7 +195,7 @@ public class messagesAdminToTenant {
 
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		WebElement messageIcon = driver.findElement(By.xpath(
-				"//nav[@class='fixed z-10 top-0 right-0 w-full border border-b shadow-xl bg-[var(--c1)] hidden sm:block print:!hidden']//a[1]//p[1]//*[name()='svg']"));
+				"//a[contains(@class, 'inline-flex') and contains(@class, 'justify-center') and .//p[text()='Messages']]"));
 		messageIcon.click();
 
 		WebElement messageInbox = driver.findElement(By.xpath("//div[@class='text-xs mb-1 flex gap-2']"));
@@ -205,6 +205,7 @@ public class messagesAdminToTenant {
 		WebElement messageBodyDetails = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/main[1]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[2]/p[1]"));
 		System.out.println(messageBodyDetails.getText());
 		Assert.assertEquals(messageBodyDetails.getText(), messagebodycoded);
+		Thread.sleep(2000);
 	}
 
 }

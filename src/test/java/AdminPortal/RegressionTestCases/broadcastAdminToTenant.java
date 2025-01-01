@@ -131,6 +131,7 @@ public class broadcastAdminToTenant {
 		randomGenerator.Visitor visitor = randomGenerator.generateRandomContact();
 
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
+		Thread.sleep(2000);
 		WebElement propertyList = driver
 				.findElement(By.xpath("//div[@class='p-multiselect p-component p-inputwrapper p-multiselect-chip w-full h-10 flex items-center property-dropdown w-fit']//div[@class='p-multiselect-label-container']"));
 		propertyList.click();
@@ -201,10 +202,10 @@ public class broadcastAdminToTenant {
 	}
 
 	@Test(priority = 3)
-	private void checkBroadcast() {
+	private void checkBroadcast() throws InterruptedException {
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 
-		WebElement broadcastIcon = driver.findElement(By.xpath("/html/body/div[1]/main/nav[1]/div/div[1]/div[2]/a[2]"));
+		WebElement broadcastIcon = driver.findElement(By.xpath("//a[contains(@class, 'inline-flex') and contains(@class, 'justify-center') and .//p[text()='Broadcast']]"));
 		broadcastIcon.click();
 
 		WebElement broadcastTenant = driver
@@ -216,6 +217,7 @@ public class broadcastAdminToTenant {
 		broadcastBodyTenant.getText();
 
 		Assert.assertEquals(broadcastcoded, broadcastBodyTenant.getText());
+		Thread.sleep(2000);
 	}
 
 }

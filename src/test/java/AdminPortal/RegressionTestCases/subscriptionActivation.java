@@ -158,15 +158,15 @@ public class subscriptionActivation {
 		servicesList.click();
 
 		Thread.sleep(2000);
-		WebElement serviceOption = driver.findElement(By.xpath("//*[@id=\"pv_id_8_0\"]"));
+		WebElement serviceOption = driver.findElement(By.xpath("//li[@aria-label='Internet Subscription - 12 Months']"));
 		serviceOption.click();
 
 		Thread.sleep(4000);
-		WebElement serviceCategoryList = driver.findElement(By.xpath("//*[@id=\"pv_id_13\"]/div"));
+		WebElement serviceCategoryList = driver.findElement(By.xpath("/html[1]/body[1]/div[4]/div[1]/div[2]/form[1]/div[3]/div[1]"));
 		serviceCategoryList.click();
 
-		Thread.sleep(2000);
-		WebElement subCategoryList = driver.findElement(By.xpath("//*[@id=\"pv_id_13_0\"]"));
+		Thread.sleep(4000);
+		WebElement subCategoryList = driver.findElement(By.xpath("/html[1]/body[1]/div[5]/div[2]/ul[1]/li[1]"));
 		subCategoryList.click();
 
 		Thread.sleep(1000);
@@ -260,28 +260,30 @@ public class subscriptionActivation {
 		WebElement startButton = driver.findElement(
 				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[1]/div/div/div/div[2]/div[1]/button"));
 		startButton.click();
+		
+		Thread.sleep(2000);
 
 		// 2. Set start date (assuming it's the first calendar)
 		WebElement startDateInput = wait.until(ExpectedConditions.elementToBeClickable(
-				By.xpath("//input[@data-pc-section='input' and @aria-controls='pv_id_53_panel']")));
+				By.xpath("/html[1]/body[1]/div[5]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/span[1]/input[1]")));
 		startDateInput.click();
 
 		WebElement startDayToSelect = wait
-				.until(ExpectedConditions.elementToBeClickable(By.xpath("//td[@aria-label='20']"))); // Replace with your desired date
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("//td[@aria-label='10']"))); // Replace with your desired date
 		startDayToSelect.click();
 
 		// 3. Set end date (assuming it's the second calendar)
 		WebElement endDateInput = wait.until(ExpectedConditions.elementToBeClickable(
-				By.xpath("//input[@data-pc-section='input' and @aria-controls='pv_id_54_panel']")));
+				By.xpath("/html[1]/body[1]/div[5]/div[1]/div[2]/div[2]/div[2]/div[1]/div[1]/span[1]/input[1]")));
 		endDateInput.click();
 
 		WebElement endDayToSelect = wait
-				.until(ExpectedConditions.elementToBeClickable(By.xpath("//td[@aria-label='25']"))); // Replace with your desired date
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("//td[@aria-label='15']"))); // Replace with your desired date
 		endDayToSelect.click();
 
 		// 4. Select billing recurrence (assuming it's the dropdown)
 		WebElement billingRecurrenceDropdown = wait.until(ExpectedConditions
-				.elementToBeClickable(By.xpath("//span[@data-pc-section='input' and @aria-controls='pv_id_55_list']")));
+				.elementToBeClickable(By.xpath("/html[1]/body[1]/div[5]/div[1]/div[2]/div[2]/div[3]/div[1]/div[1]/div[1]")));
 		billingRecurrenceDropdown.click();
 
 		WebElement billingRecurrenceOption = wait.until(

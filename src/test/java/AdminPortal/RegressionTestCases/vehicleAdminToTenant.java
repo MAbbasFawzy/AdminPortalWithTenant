@@ -3,12 +3,14 @@ package AdminPortal.RegressionTestCases;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -25,6 +27,9 @@ public class vehicleAdminToTenant extends randomGenerator {
 	WebDriver driver;
 	WebDriverWait wait;
 
+	public String adminWindow;
+	public String tenantWindow;
+	
 	private String baseUrl;
 	private String username;
 	private String password;
@@ -42,12 +47,9 @@ public class vehicleAdminToTenant extends randomGenerator {
 		login();
 	}
 
-	@AfterTest
-	public void tearDown() {
-		if (driver != null) {
-			driver.quit();
-		}
-	}
+	/*
+	 * @AfterTest public void tearDown() { if (driver != null) { driver.quit(); } }
+	 */
 
 	private void loadProperties() {
 		Properties properties = new Properties();
@@ -148,7 +150,6 @@ public class vehicleAdminToTenant extends randomGenerator {
 	public void enterVehicleData() throws InterruptedException {
 
 		randomGenerator.Visitor visitor = randomGenerator.generateRandomContact();
-
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 
 		
@@ -170,26 +171,20 @@ public class vehicleAdminToTenant extends randomGenerator {
 		tenantListOption.click();
 		Thread.sleep(2000);
 
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		
 		WebElement carPlateNumber = driver.findElement(
 				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/div/div[2]/form/div[2]/div[1]/input"));
 		storedVehicleNumber = visitor.letters + "-" + visitor.vehiclenumber;
+		Thread.sleep(1000);
+		js.executeScript("arguments[0].scrollIntoView(true);", carPlateNumber);
+		Thread.sleep(1000);
 		carPlateNumber.sendKeys(visitor.letters + "-" + visitor.vehiclenumber);
-		Thread.sleep(500);
-
+		Thread.sleep(1000);
+		
 		WebElement carColor = driver.findElement(
 				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/div/div[2]/form/div[2]/div[2]/input"));
-		carColor.sendKeys("Black");
-
-		/*
-		 * WebElement carModel = wait.until(ExpectedConditions.elementToBeClickable(
-		 * By.xpath(
-		 * "/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/div/div[2]/form/div[3]/div[1]/div"
-		 * ))); carModel.click();
-		 * 
-		 * WebElement carModelOption = wait
-		 * .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
-		 * "/html/body/div[4]/div[2]/ul/li[1]"))); carModelOption.click();
-		 */
+		carColor.sendKeys("Black");		
 
 		WebElement carYear = driver.findElement(By.xpath(
 				"/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/div/div[2]/form/div[3]/div[2]/span/input"));
@@ -197,11 +192,25 @@ public class vehicleAdminToTenant extends randomGenerator {
 
 		WebElement submit = driver.findElement(
 				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/div/div[2]/form/div[6]/button"));
-		JavascriptExecutor js = (JavascriptExecutor) driver;
+		
 		js.executeScript("arguments[0].scrollIntoView(true);", submit);
 
 		Thread.sleep(500);
 		submit.click();
+		
+		Thread.sleep(5000);
+		
+		// Step 1: Store the admin window handle
+        adminWindow = driver.getWindowHandle();
+        
+        // Step 2: Open a new tab
+        driver.switchTo().newWindow(WindowType.TAB);
+		
+        // Step 3: Navigate to the new URL in the new tab
+        driver.get("https://automation.yarncloud.dev/tenant/auth/login");
+        
+        // Step 4: Store the tenant window handle
+        tenantWindow = driver.getWindowHandle();
 
 	}
 
@@ -209,7 +218,7 @@ public class vehicleAdminToTenant extends randomGenerator {
 	private void tenantLogin() throws InterruptedException { // login code
 
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
-		driver.navigate().to("https://automation.yarncloud.dev/tenant/auth/login");
+		driver.switchTo().window(tenantWindow);
 
 		WebElement email = driver.findElement(By.xpath("/html/body/div[1]/main/div/div/div[3]/form/div[1]/input"));
 		email.sendKeys(tenantusername);
@@ -253,4 +262,84 @@ public class vehicleAdminToTenant extends randomGenerator {
 		Assert.assertEquals(plate, storedVehicleNumber);
 
 	}
+	
+	@Test(priority = 3)
+	public void checkDeletedVehicle() {
+		
+		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+		driver.switchTo().window(adminWindow);
+		
+		WebElement actionList = driver.findElement(By.xpath("/html[1]/body[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/button[1]/i[1]"));
+		actionList.click();
+		
+		
+		WebElement deleteVehicle = driver.findElement(By.xpath("//div[@class='dropdown-menu text-start show']//button[@class='dropdown-item text-danger py-2 px-3'][normalize-space()='Delete Vehicle']"));
+		deleteVehicle.click();
+		
+		WebElement confirmDelete = driver.findElement(By.xpath("//button[normalize-space()='Delete']"));
+		confirmDelete.click();
+		
+		// Locate the table rows
+        List<WebElement> rows = driver.findElements(By.cssSelector(".table tbody tr"));
+
+        boolean vehicleExists = false;
+
+        // Iterate through the rows to check for the vehicle number
+        for (WebElement row : rows) {
+            // Get the vehicle number from the third column (Plate)
+            String vehicleNumber = row.findElements(By.tagName("td")).get(2).getText();
+            if (vehicleNumber.equals(storedVehicleNumber)) {
+                vehicleExists = true;
+                break;
+            }
+        }
+
+        // Display message based on existence
+        if (vehicleExists) {
+            System.out.println("The vehicle number " + storedVehicleNumber + " still exists in the table.");
+        } else {
+            System.out.println("The vehicle number " + storedVehicleNumber + " has been deleted from the table.");
+        }
+		
+	}
+	
+	@Test(priority = 4)
+	public void checkDeletedVehicleTenant() throws InterruptedException {
+		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+		driver.switchTo().window(tenantWindow);
+		
+		Thread.sleep(500);
+
+		// Refresh the page
+		driver.navigate().refresh();
+		Thread.sleep(500);
+		
+		// Locate the vehicle entries in the grid
+        List<WebElement> vehicleCards = driver.findElements(By.cssSelector(".grid .block .mb-3 h4"));
+
+        boolean vehicleExists = false;
+
+        // Iterate through the vehicle entries to check for the vehicle number
+        for (WebElement vehicleCard : vehicleCards) {
+            // Get the vehicle number from the card
+            String vehicleNumber = vehicleCard.getText().trim();
+            if (vehicleNumber.equals(storedVehicleNumber)) {
+                vehicleExists = true;
+                break;
+            }
+        }
+
+        // Display message based on existence
+        if (vehicleExists) {
+            System.out.println("The vehicle number " + storedVehicleNumber + " still exists in the data.");
+        } else {
+            System.out.println("The vehicle number " + storedVehicleNumber + " has been deleted from the data.");
+        }
+		
+		
+	}
+	
+	
 }

@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results ignored="0" total="4" passed="4" failed="0" skipped="0">
+<testng-results ignored="0" total="6" passed="6" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2024-12-19T19:29:25 EET" name="Default suite" finished-at="2024-12-19T19:31:11 EET" duration-ms="106397">
+  <suite started-at="2025-01-01T22:34:54 EET" name="Default suite" finished-at="2025-01-01T22:36:07 EET" duration-ms="72795">
     <groups>
     </groups>
-    <test started-at="2024-12-19T19:29:25 EET" name="Default test" finished-at="2024-12-19T19:31:11 EET" duration-ms="106397">
-      <class name="AdminPortal.RegressionTestCases.documentAdminToTenant">
-        <test-method is-config="true" signature="setup()[pri:0, instance:AdminPortal.RegressionTestCases.documentAdminToTenant@72d1ad2e]" started-at="2024-12-19T19:29:25 EET" name="setup" finished-at="2024-12-19T19:29:42 EET" duration-ms="16722" status="PASS">
+    <test started-at="2025-01-01T22:34:54 EET" name="Default test" finished-at="2025-01-01T22:36:07 EET" duration-ms="72795">
+      <class name="AdminPortal.RegressionTestCases.vehicleAdminToTenant">
+        <test-method is-config="true" signature="setup()[pri:0, instance:AdminPortal.RegressionTestCases.vehicleAdminToTenant@5c5eefef]" started-at="2025-01-01T22:34:54 EET" name="setup" finished-at="2025-01-01T22:35:15 EET" duration-ms="20308" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="addNewDocument()[pri:0, instance:AdminPortal.RegressionTestCases.documentAdminToTenant@72d1ad2e]" started-at="2024-12-19T19:29:42 EET" name="addNewDocument" finished-at="2024-12-19T19:29:46 EET" duration-ms="4641" status="PASS">
+        <test-method signature="openVehiclePage()[pri:0, instance:AdminPortal.RegressionTestCases.vehicleAdminToTenant@5c5eefef]" started-at="2025-01-01T22:35:15 EET" name="openVehiclePage" finished-at="2025-01-01T22:35:21 EET" duration-ms="6423" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- addNewDocument -->
-        <test-method signature="tenantLogin()[pri:1, instance:AdminPortal.RegressionTestCases.documentAdminToTenant@72d1ad2e]" started-at="2024-12-19T19:29:46 EET" name="tenantLogin" finished-at="2024-12-19T19:30:05 EET" duration-ms="18851" status="PASS">
+        </test-method> <!-- openVehiclePage -->
+        <test-method signature="enterVehicleData()[pri:1, instance:AdminPortal.RegressionTestCases.vehicleAdminToTenant@5c5eefef]" started-at="2025-01-01T22:35:21 EET" name="enterVehicleData" finished-at="2025-01-01T22:35:50 EET" duration-ms="29225" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- enterVehicleData -->
+        <test-method signature="tenantLogin()[pri:1, instance:AdminPortal.RegressionTestCases.vehicleAdminToTenant@5c5eefef]" started-at="2025-01-01T22:35:50 EET" name="tenantLogin" finished-at="2025-01-01T22:35:55 EET" duration-ms="4510" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tenantLogin -->
-        <test-method signature="checkDocumentAdded()[pri:2, instance:AdminPortal.RegressionTestCases.documentAdminToTenant@72d1ad2e]" started-at="2024-12-19T19:30:05 EET" name="checkDocumentAdded" finished-at="2024-12-19T19:30:10 EET" duration-ms="4213" status="PASS">
+        <test-method signature="checkVehicleAdded()[pri:2, instance:AdminPortal.RegressionTestCases.vehicleAdminToTenant@5c5eefef]" started-at="2025-01-01T22:35:55 EET" name="checkVehicleAdded" finished-at="2025-01-01T22:36:00 EET" duration-ms="5288" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- checkDocumentAdded -->
-        <test-method signature="deleteDocs()[pri:3, instance:AdminPortal.RegressionTestCases.documentAdminToTenant@72d1ad2e]" started-at="2024-12-19T19:30:10 EET" name="deleteDocs" finished-at="2024-12-19T19:31:11 EET" duration-ms="61048" status="PASS">
+        </test-method> <!-- checkVehicleAdded -->
+        <test-method signature="checkDeletedVehicle()[pri:3, instance:AdminPortal.RegressionTestCases.vehicleAdminToTenant@5c5eefef]" started-at="2025-01-01T22:36:00 EET" name="checkDeletedVehicle" finished-at="2025-01-01T22:36:03 EET" duration-ms="2458" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- deleteDocs -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:AdminPortal.RegressionTestCases.documentAdminToTenant@72d1ad2e]" started-at="2024-12-19T19:31:11 EET" name="tearDown" finished-at="2024-12-19T19:31:11 EET" duration-ms="872" status="PASS">
+        </test-method> <!-- checkDeletedVehicle -->
+        <test-method signature="checkDeletedVehicleTenant()[pri:4, instance:AdminPortal.RegressionTestCases.vehicleAdminToTenant@5c5eefef]" started-at="2025-01-01T22:36:03 EET" name="checkDeletedVehicleTenant" finished-at="2025-01-01T22:36:07 EET" duration-ms="4525" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- tearDown -->
-      </class> <!-- AdminPortal.RegressionTestCases.documentAdminToTenant -->
+        </test-method> <!-- checkDeletedVehicleTenant -->
+      </class> <!-- AdminPortal.RegressionTestCases.vehicleAdminToTenant -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>

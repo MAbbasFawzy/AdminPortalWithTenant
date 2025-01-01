@@ -3,12 +3,16 @@ package AdminPortal.RegressionTestCases;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
@@ -154,20 +158,62 @@ public class documentAdminToTenant {
 		WebElement viewTenantData = driver.findElement(
 				By.xpath("/html/body/div[2]/div/div[1]/div[2]/div[3]/div/div[2]/div[1]/table/tbody/tr[4]/td[9]/a"));
 		viewTenantData.click();
+		
+		// Use a Set to track uploaded files
+        Set<String> uploadedFiles = new HashSet<>();
 
-		Thread.sleep(500);
-		driver.findElement(By.xpath(
-				"/html/body/div[2]/div/div[1]/div[2]/div[3]/div[1]/div[1]/div/div[2]/div[2]/div[1]/div/div[1]/input"))
-				.sendKeys("C:\\Users\\eng_m\\eclipse-workspace\\RegressionTestCases\\logo-white.png");
+        // Define the file paths
+        String[] filePaths = {
+            "C:\\Users\\eng_m\\eclipse-workspace\\RegressionTestCases\\logo-white.png",
+            "C:\\Users\\eng_m\\eclipse-workspace\\RegressionTestCases\\Yarn.pdf"
+        };
 
-		Thread.sleep(500);
-		driver.findElement(By.xpath(
-				"/html/body/div[2]/div/div[1]/div[2]/div[3]/div[1]/div[1]/div/div[2]/div[2]/div[1]/div/div[1]/input"))
-				.sendKeys("C:\\Users\\eng_m\\eclipse-workspace\\RegressionTestCases\\New Microsoft Word Document.pdf");
+        // Loop through the file paths
+        for (String filePath : filePaths) {
+            // Check if the file is already uploaded
+            if (!uploadedFiles.contains(filePath)) {
+            	
+            	
+                // Upload the file
+            	
+                driver.findElement(By.xpath("//input[@id='contract-tenant-view-input-file-upload']"))
+                        .sendKeys(filePath);
+                
+                
+                // Add the file to the set
+                uploadedFiles.add(filePath);
+                // Optional: Wait for a moment to ensure the file is processed
+                Thread.sleep(1000);
+            } else {
+                System.out.println("File already uploaded: " + filePath);
+            }
+            driver.navigate().refresh();
+            Thread.sleep(2000);
+        }
+
+		/*
+		 * Thread.sleep(1000); driver.findElement(By.xpath(
+		 * "//input[@id='contract-tenant-view-input-file-upload']")) .sendKeys(
+		 * "C:\\Users\\eng_m\\eclipse-workspace\\RegressionTestCases\\logo-white.png");
+		 * 
+		 * 
+		 * 
+		 * Thread.sleep(5000); driver.findElement(By.xpath(
+		 * "//input[@id='contract-tenant-view-input-file-upload']"))
+		 * .sendKeys("C:\\Users\\eng_m\\eclipse-workspace\\RegressionTestCases\\New Microsoft Word Document.pdf"
+		 * );
+		 * 
+		 * Thread.sleep(500); driver.findElement(By.xpath(
+		 * "//input[@id='contract-tenant-view-input-file-upload']")) .sendKeys(
+		 * "C:\\Users\\eng_m\\eclipse-workspace\\RegressionTestCases\\Yarn.pdf");
+		 */
+		 
 
 		WebElement successMessage = driver.findElement(By.xpath("/html/body/div[4]"));
 		successMessage.getText();
 		System.out.println(successMessage.getText());
+		
+		Thread.sleep(5000);
 
 	}
 
@@ -215,25 +261,31 @@ public class documentAdminToTenant {
 		// Create a WebDriverWait
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
 
-		// Wait for the element containing "New Microsoft Word Document.pdf" to be visible
-		WebElement yarnPDFFile = wait.until(ExpectedConditions
-				.visibilityOfElementLocated(By.xpath("//p[contains(text(), 'New Microsoft Word Document.pdf')]")));
+		
 
 		WebElement yarnImageFile = wait.until(
 				ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[contains(text(), 'logo-white.png')]")));
+		
+		WebElement yarnPDF = wait
+				.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[contains(text(), 'Yarn.pdf')]")));
+		 
 
-		// Print the text of the found element
-		System.out.println("Found file: " + yarnPDFFile.getText());
+		
 
 		// Print the text of the found element
 		System.out.println("Found file: " + yarnImageFile.getText());
+		
+		
+		// Print the text of the found element
+		System.out.println("Found file: " + yarnPDF.getText());
+		 
 
 	}
 
 	@Test(priority = 3)
 	public void deleteDocs() throws InterruptedException {
 
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(40));
 		
 		Thread.sleep(2000);
 
@@ -241,12 +293,12 @@ public class documentAdminToTenant {
 		
 		// Wait for the delete icons to be present
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("delete-icon")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("pi-trash")));
 
         // Loop until there are no more delete icons
         while (true) {
             // Re-locate the delete icons
-            List<WebElement> deleteIcons = driver.findElements(By.className("delete-icon"));
+            List<WebElement> deleteIcons = driver.findElements(By.className("pi-trash"));
 
             // Break the loop if there are no delete icons left
             if (deleteIcons.isEmpty()) {
@@ -261,6 +313,7 @@ public class documentAdminToTenant {
 
             // Click on the delete icon
             deleteIcon.click();
+            
 
             // Wait for the confirmation popup to appear
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("swal2-title")));
@@ -268,9 +321,55 @@ public class documentAdminToTenant {
             // Click the confirm delete button
             WebElement confirmDeleteButton = driver.findElement(By.className("swal2-confirm"));
             confirmDeleteButton.click();
+            driver.navigate().refresh();
 
             // Optionally, you may want to add a small delay to observe the action
             Thread.sleep(500); // Adjust the sleep time as needed
         }
+	}
+	
+	@Test(priority = 4)
+	public void checkDocumentsDeleted() throws InterruptedException {
+		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
+		Thread.sleep(2000);
+
+		driver.switchTo().window(tenantWindow);
+		
+		Thread.sleep(500);
+
+		// Refresh the page
+		driver.navigate().refresh();
+		Thread.sleep(500);
+		
+		
+		/*
+		 * // Assuming 'wait' is already defined as WebDriverWait try { WebElement
+		 * yarnPDFFile = wait.until(ExpectedConditions .visibilityOfElementLocated(By.
+		 * xpath("//p[contains(text(), 'New Microsoft Word Document.pdf')]")));
+		 * System.out.
+		 * println("The file 'New Microsoft Word Document.pdf' is still added."); }
+		 * catch (TimeoutException e) { System.out.
+		 * println("The file 'New Microsoft Word Document.pdf' has been deleted."); }
+		 */
+
+		try {
+		    WebElement yarnImageFile = wait.until(
+		            ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[contains(text(), 'logo-white.png')]")));
+		    System.out.println("The file 'logo-white.png' is still added.");
+		} catch (TimeoutException e) {
+		    System.out.println("The file 'logo-white.png' has been deleted.");
+		}
+		
+		
+		try {
+			WebElement yarnPDF = wait.until(
+					ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[contains(text(), 'Yarn.pdf')]")));
+			System.out.println("The file 'Yarn.pdf' is still added.");
+		} catch (TimeoutException e) {
+			System.out.println("The file 'Yarn.pdf' has been deleted.");
+		}
+
 	}
 }

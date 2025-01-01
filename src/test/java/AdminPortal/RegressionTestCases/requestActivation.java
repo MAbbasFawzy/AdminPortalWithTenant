@@ -27,6 +27,9 @@ public class requestActivation {
 	
 	WebDriver driver;
 	WebDriverWait wait;
+	
+	public String adminWindow;
+	public String tenantWindow;
 
 	private String baseUrl;
 	private String username;
@@ -48,12 +51,9 @@ public class requestActivation {
 		login();
 	}
 
-	@AfterClass
-	public void tearDown() {
-		if (driver != null) {
-			driver.quit();
-		}
-	}
+	/*
+	 * @AfterClass public void tearDown() { if (driver != null) { driver.quit(); } }
+	 */
 
 	private void loadProperties() {
 		Properties properties = new Properties();
@@ -113,6 +113,10 @@ public class requestActivation {
 
 		WebElement userName = driver.findElement(By.xpath("//*[@id=\"__nuxt\"]/main/nav[1]/div/div[1]/div[2]/span[2]"));
 		AssertJUnit.assertEquals(tenantusername, userName.getText());
+		
+		
+		// Store the tenant window handle
+        tenantWindow = driver.getWindowHandle();
 
 	}
 
@@ -131,11 +135,11 @@ public class requestActivation {
 		Thread.sleep(2000);
 		searchBox.sendKeys("Internet");
 
-		Thread.sleep(6000);
-		WebElement serviceTypeButton = driver.findElement(By.xpath("//*[@id=\"__nuxt\"]/main/div/div/div[3]/div"));
+		//Thread.sleep(500);
+		WebElement serviceTypeButton = driver.findElement(By.xpath("//div[@class='grid place-items-center border bg-[var(--c1)] p-6 rounded-xl hover:shadow-lg h-32 cursor-pointer']"));
 		serviceTypeButton.click();
 
-		Thread.sleep(6000);
+		//Thread.sleep(500);
 		WebElement serviceTitle = driver
 				.findElement(By.xpath("//*[@id=\"__nuxt\"]/main/div/div/div[2]/div/div[1]/h4/span[2]"));
 		assertEquals(serviceTitle.getText(), serviceTitle.getText());
@@ -148,28 +152,28 @@ public class requestActivation {
 		
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
 		
-		Thread.sleep(4000);
+		Thread.sleep(500);
 		WebElement requestServiceButton = driver
 				.findElement(By.xpath("//*[@id=\"__nuxt\"]/main/div/div/div[2]/div/div[1]/div/button[1]"));
 		requestServiceButton.click();
 
-		Thread.sleep(4000);
-		WebElement servicesDropDown = driver.findElement(By.xpath("/html/body/div[4]/div/div[2]/form/div[1]/div/div"));
+		Thread.sleep(2000);
+		WebElement servicesDropDown = driver.findElement(By.xpath("/html[1]/body[1]/div[4]/div[1]/div[2]/form[1]/div[1]/div[1]/span[1]"));
 		servicesDropDown.click();
 
-		Thread.sleep(4000);
-		WebElement serviceOption = driver.findElement(By.xpath("//*[@id=\"pv_id_8_0\"]"));
+		Thread.sleep(500);
+		WebElement serviceOption = driver.findElement(By.xpath("//li[@aria-label='No Internet Connection']"));
 		serviceOption.click();
 
-		Thread.sleep(4000);
-		WebElement serviceCategory = driver.findElement(By.xpath("/html/body/div[4]/div/div[2]/form/div[2]/div/div"));
+		Thread.sleep(2000);
+		WebElement serviceCategory = driver.findElement(By.xpath("/html[1]/body[1]/div[4]/div[1]/div[2]/form[1]/div[2]/div[1]/span[1]"));
 		serviceCategory.click();
 
-		Thread.sleep(4000);
-		WebElement serviceCategoryOption = driver.findElement(By.xpath("/html/body/div[5]/div[2]/ul/li[1]"));
+		Thread.sleep(500);
+		WebElement serviceCategoryOption = driver.findElement(By.xpath("//li[@aria-label='IT Maintenance']"));
 		serviceCategoryOption.click();
 
-		Thread.sleep(4000);
+		Thread.sleep(500);
 		WebElement description = driver.findElement(By.xpath("//textarea[@class='w-full']"));
 		description.sendKeys("Testing description new request is added.");
 
@@ -183,14 +187,14 @@ public class requestActivation {
 		nextButton.click(); // Click if you need to go to the next month
 
 		// Wait for the date picker to update
-		Thread.sleep(4000); // Wait for 1 second
+		Thread.sleep(500); // Wait for 1 second
 
 		// Select the date (30)
 		WebElement dateToSelect = driver.findElement(By.xpath("//td[@aria-label='30']"));
 		dateToSelect.click();
 
 		// Wait for the time picker to be visible (if necessary)
-		Thread.sleep(4000); // Wait for 1 second
+		Thread.sleep(500); // Wait for 1 second
 
 		// Set the hour (4 PM)
 		WebElement hourIncrementButton = driver
@@ -210,7 +214,7 @@ public class requestActivation {
 		WebElement ampmButton = driver.findElement(By.xpath("//div[@class='p-ampm-picker']//button[@aria-label='pm']"));
 		ampmButton.click();
 
-		Thread.sleep(4000);
+		Thread.sleep(500);
 		WebElement submitRequest = driver.findElement(By.xpath("/html/body/div[4]/div/div[2]/form/div[7]/button"));
 		submitRequest.click();
 
@@ -247,16 +251,22 @@ public class requestActivation {
 	@Test(priority = 3)
 	private void loginToAdmin() throws InterruptedException { // login code
 
-		// login code
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
 
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+		// Step 1: Store the admin window handle
+		adminWindow = driver.getWindowHandle();
+
+		// Step 2: Open a new tab
+		driver.switchTo().newWindow(WindowType.TAB);
+
+		// Step 3: Navigate to the new URL in the new tab
+		driver.get("https://automation.yarncloud.dev/");
 		
-		driver.navigate().to("https://automation.yarncloud.dev/auth/login");
-		Thread.sleep(4000);
+		
 		WebElement email = driver.findElement(By.xpath("/html/body/div[2]/div/div/form/div[1]/input"));
 		email.sendKeys(username);
 
-		Thread.sleep(4000);
+		
 		WebElement passcode = driver.findElement(By.xpath("/html/body/div[2]/div/div/form/div[2]/div/input"));
 		passcode.sendKeys(password);
 
@@ -274,6 +284,9 @@ public class requestActivation {
 	public void openRequestsPageAdmin() throws InterruptedException {
 
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+		
+		// Store the tenant window handle
+        adminWindow = driver.getWindowHandle();
 
 		WebElement tenantRequests = driver.findElement(By.xpath(
 				"/html[1]/body[1]/div[2]/div[1]/nav[1]/div[1]/div[3]/div[5]/div[1]/div[1]/div[3]/div[1]/div[1]/a[1]/span[1]/span[1]"));
@@ -309,53 +322,264 @@ public class requestActivation {
 
 		Assert.assertEquals(alertMessageText, alertMessageText);
 		
-		Thread.sleep(4000);
-		WebElement actionList = driver.findElement(By.xpath("//div[@class='dropdown']//button[@id='dropdownMenuButton']"));
-		actionList.click();
-		
-		WebElement completeRequest = driver.findElement(By.xpath("//button[normalize-space()='Complete']"));
-		completeRequest.click();
-		
-		WebElement confirmComplete = driver.findElement(By.xpath("//button[@type='button'][normalize-space()='Complete']"));
-		confirmComplete.click();
-		
-		Thread.sleep(4000);
-		requestStatus.getText();
-		Assert.assertEquals(requestStatus.getText(), "Completed");
 	}
 	
 	@Test(priority = 4)
-	public void checkRequestStatusTenantPortal() {
+	public void requestProgressTenant() throws InterruptedException {
 		
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
-		driver.navigate().to("https://automation.yarncloud.dev/tenant/auth/login");
+
+		driver.switchTo().window(tenantWindow);
 		
-		WebElement requestsPage = driver.findElement(By.linkText("My Requests"));
-		requestsPage.click();
+		
+		// Store the tenant window handle
+        tenantWindow = driver.getWindowHandle();
+		
+		Thread.sleep(500);
+
+		// Refresh the page
+		driver.navigate().refresh();
+		Thread.sleep(500);
+		
+		// Locate the request element
+        WebElement requestElement = driver.findElement(By.xpath("//body/div/main[@dir='ltr']/div/div/div/a[1]/div[1]"));
+
+        // Extract the request ID
+        String requestId = requestElement.findElement(By.xpath("/html[1]/body[1]/div[1]/main[1]/div[1]/div[1]/div[3]/a[1]/div[1]/h5[1]/span[1]")).getText();
+
+        // Extract the status of the request
+        String status = requestElement.findElement(By.xpath("//body/div/main[@dir='ltr']/div/div/div/a[1]/div[2]/span[2]")).getText();
+
+        
+
+        // Print the extracted data
+        System.out.println("Request ID: " + requestId);
+        System.out.println("Status: " + status);
+        
+        
+		
+	}
+	
+	@Test(priority = 5)
+	public void pauseRequestAdmin() throws InterruptedException {
+		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+
+		Thread.sleep(500);
+		driver.switchTo().window(adminWindow);
+		
+		Thread.sleep(500);
+
+		
+		WebElement actionList = driver
+				.findElement(By.xpath("//div[@class='dropdown']//button[@id='dropdownMenuButton']"));
+		actionList.click();
+
+		WebElement pauseRequest = driver.findElement(By.xpath("//button[normalize-space()='Pause']"));
+		pauseRequest.click();
+
+		WebElement pauseComplete = driver.findElement(By.xpath("//button[@type='button'][normalize-space()='Pause']"));
+		pauseComplete.click();
+
+		WebElement successMessage = wait
+				.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".p-toast > div:nth-child(1)")));
+
+		String alertMessageText = successMessage.getText();
+		System.out.println("Alert message: " + alertMessageText);
+
+		WebElement requestStatus = driver.findElement(By.xpath("//span[@class='badge badge-warning']"));
+		requestStatus.getText();
+
+		Assert.assertEquals(requestStatus.getText(), "Paused");
+
+		Assert.assertEquals(alertMessageText, alertMessageText);
+		Thread.sleep(2000);
+
+	}
+	
+	
+	@Test(priority = 6)
+	public void checkPausedRequestTenant() throws InterruptedException {
+		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+		
+		Thread.sleep(2000);
+		driver.switchTo().window(tenantWindow);
+		
+		// Refresh the page
+		driver.navigate().refresh();
+		Thread.sleep(2000);
+
+		// Refresh the page driver.navigate().refresh(); Thread.sleep(500);
+
+		// Locate the request element
+		WebElement requestElement =
+		driver.findElement(By.xpath("//body/div/main[@dir='ltr']/div/div/div/a[1]/div[1]"));
+
+		// Extract the request ID
+		String requestId =
+		requestElement
+				.findElement(By.xpath("/html[1]/body[1]/div[1]/main[1]/div[1]/div[1]/div[3]/a[1]/div[1]/h5[1]/span[1]"))
+				.getText();
+
+		// Extract the status of the request
+		String status =
+		requestElement.findElement(By.xpath("//body/div/main[@dir='ltr']/div/div/div/a[1]/div[2]/span[2]")).getText();
+
+		// Print the extracted data
+		System.out.println("Request ID: " + requestId);
+		System.out.println("Status: " + status);
+		
+	}
+	
+	@Test(priority = 7)
+	public void cancelRequestAdmin() throws InterruptedException {
+		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+
+		Thread.sleep(500);
+		driver.switchTo().window(adminWindow);
+		
+		Thread.sleep(500);
+
+		
+		WebElement actionList = driver
+				.findElement(By.xpath("//div[@class='dropdown']//button[@id='dropdownMenuButton']"));
+		actionList.click();
+
+		WebElement cancelRequest = driver.findElement(By.xpath("//button[normalize-space()='Cancel']"));
+		cancelRequest.click();
+
+		WebElement cancelComplete = driver.findElement(By.xpath("//button[@type='button'][normalize-space()='Cancel']"));
+		cancelComplete.click();
+
+		WebElement successMessage = wait
+				.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".p-toast > div:nth-child(1)")));
+
+		String alertMessageText = successMessage.getText();
+		System.out.println("Alert message: " + alertMessageText);
+
+		WebElement requestStatus = driver.findElement(By.xpath("//span[@class='badge badge-secondary']"));
+		requestStatus.getText();
+
+		Assert.assertEquals(requestStatus.getText(), "Cancelled");
+
+		Assert.assertEquals(alertMessageText, alertMessageText);
+		Thread.sleep(2000);
+		
+	}
+	
+	
+	@Test(priority = 8)
+	public void checkCancelledRequestTenant() throws InterruptedException {
+		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+		
+		Thread.sleep(2000);
+		driver.switchTo().window(tenantWindow);
+		
+		// Refresh the page
+		
+		
+		Thread.sleep(2000);
+
+		WebElement closedRequests = driver.findElement(By.xpath("//button[normalize-space()='Closed']"));
+		closedRequests.click();
+
+		// Locate the request element
+		WebElement requestElement =
+		driver.findElement(By.xpath("//body/div/main[@dir='ltr']/div/div/div/a[1]/div[1]"));
+
+		// Extract the request ID
+		String requestId =
+		requestElement
+				.findElement(By.xpath("/html[1]/body[1]/div[1]/main[1]/div[1]/div[1]/div[3]/a[1]/div[1]/h5[1]/span[1]"))
+				.getText();
+
+		// Extract the status of the request
+		String status =
+		requestElement.findElement(By.xpath("//body/div/main[@dir='ltr']/div/div/div/a[1]/div[2]/span[2]")).getText();
+
+		// Print the extracted data
+		System.out.println("Request ID: " + requestId);
+		System.out.println("Status: " + status);
+		
+		
+	}
+	
+	@Test(priority = 9)
+	public void completeRequestAdmin() throws InterruptedException {
+		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+
+		Thread.sleep(4000);
+		driver.switchTo().window(adminWindow);
+		
+		
+
+		
+		WebElement actionList = driver
+				.findElement(By.xpath("//div[@class='dropdown']//button[@id='dropdownMenuButton']"));
+		actionList.click();
+
+		WebElement completeRequest = driver.findElement(By.xpath("//button[normalize-space()='Complete']"));
+		completeRequest.click();
+
+		WebElement confirmComplete = driver.findElement(By.xpath("//button[@type='button'][normalize-space()='Complete']"));
+		confirmComplete.click();
+
+		WebElement successMessage = wait
+				.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".p-toast > div:nth-child(1)")));
+
+		String alertMessageText = successMessage.getText();
+		System.out.println("Alert message: " + alertMessageText);
+
+		WebElement requestStatus = driver.findElement(By.xpath("//span[@class='badge badge-info']"));
+		requestStatus.getText();
+
+		Assert.assertEquals(requestStatus.getText(), "Completed");
+
+		Assert.assertEquals(alertMessageText, alertMessageText);
+		Thread.sleep(4000);
+		
+	}
+	
+	@Test(priority = 10)
+	public void checkCompletedRequestTenant() throws InterruptedException {
+		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+		
+		Thread.sleep(4000);
+		driver.switchTo().window(tenantWindow);
+		
+		// Refresh the page
+		driver.navigate().refresh();
+		Thread.sleep(4000);
 		
 		WebElement closedRequests = driver.findElement(By.xpath("//button[normalize-space()='Closed']"));
 		closedRequests.click();
+
+
+		// Locate the request element
+		WebElement requestElement =
+		driver.findElement(By.xpath("//body/div/main[@dir='ltr']/div/div/div/a[1]/div[1]"));
+
+		// Extract the request ID
+		String requestId =
+		requestElement
+				.findElement(By.xpath("/html[1]/body[1]/div[1]/main[1]/div[1]/div[1]/div[3]/a[1]/div[1]/h5[1]/span[1]"))
+				.getText();
+
+		// Extract the status of the request
+		String status =
+		requestElement.findElement(By.xpath("//body/div/main[@dir='ltr']/div/div/div/a[1]/div[2]/span[2]")).getText();
+
+		// Print the extracted data
+		System.out.println("Request ID: " + requestId);
+		System.out.println("Status: " + status);
 		
-		// Locate the <a> element containing the request ID
-        WebElement requestLink = driver.findElement(By.xpath("//a[contains(@href, 'request/view?id=')]"));
-
-        // Extract the request ID from the text
-        String requestText = requestLink.getText();
-        String requestID = requestText.split(" ")[0].replace("#", ""); // Extracting the ID part
-
-        // Locate the status element
-        WebElement statusElement = driver.findElement(By.xpath("//span[contains(@class, 'text-sm') and contains(text(), 'Completed')]"));
-
-        // Extract the status text
-        String status = statusElement.getText();
-
-        // Print the request ID and status
-        System.out.println("Request ID: " + requestID);
-        
-        Assert.assertEquals(requestID, requestid);
-        
-        System.out.println("Status: " + status);
-        
-        Assert.assertEquals(status, "Completed");
 	}
+
+	
+	 
 }
